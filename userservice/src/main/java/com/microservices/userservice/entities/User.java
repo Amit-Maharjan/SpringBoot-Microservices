@@ -1,10 +1,10 @@
 package com.microservices.userservice.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,4 +24,7 @@ public class User {
     private String email;
 
     private String about;
+
+    @Transient
+    private List<Rating> ratings = new ArrayList<>();
 }
