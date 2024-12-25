@@ -50,12 +50,12 @@ public class UserServiceImpl implements UserService {
                         );
 
         // Microservice calling microservice using RestTemplate
-        Rating[] userRatingList = restTemplate.getForObject("http://localhost:8083/ratings/users/" + user.getUserId(), Rating[].class);
+        Rating[] userRatingList = restTemplate.getForObject("http://RATINGSERVICE/ratings/users/" + user.getUserId(), Rating[].class);
         logger.info("Before : {}", userRatingList);
 
         List<Rating> userRatings = Arrays.asList(userRatingList);
         List<Rating> ratingList = userRatings.stream().map(rating -> {
-            ResponseEntity<Hotel> hotelResponseEntity = restTemplate.getForEntity("http://localhost:8082/hotels/" + rating.getHotelId(), Hotel.class);
+            ResponseEntity<Hotel> hotelResponseEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotels/" + rating.getHotelId(), Hotel.class);
             Hotel hotel = hotelResponseEntity.getBody();
             rating.setHotel(hotel);
             return rating;
