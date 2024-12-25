@@ -1,12 +1,17 @@
 package com.microservices.userservice.services.impl;
 
+import com.microservices.userservice.entities.Rating;
 import com.microservices.userservice.entities.User;
 import com.microservices.userservice.exceptions.ResourceNotFoundException;
 import com.microservices.userservice.repositories.UserRepository;
 import com.microservices.userservice.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +19,11 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public User saveUser(User user) {
@@ -29,11 +39,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User with id " + userId + " not found on the server !!"
-                        )
-                );
+        User user = userRepository.findById(userId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "User with id " + userId + " not found on the server !!"
+                                )
+                        );
+
+        // Microservice calling microservice using RestTemplate
+        ArrayList<Rating> ratingList = restTemplate.getForObject("http://localhost:8083/ratings/users/" + user.getUserId(), ArrayList.class);
+        logger.info("{}", ratingList);
+        user.setRatings(ratingList);
+
+        return user;
     }
 }
