@@ -18,17 +18,19 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private String secretKey = "";
+    private static final String secretKey = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
-    public JwtService() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGenerator.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private String secretKey = "";
+//
+//    public JwtService() {
+//        try {
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+//            SecretKey sk = keyGenerator.generateKey();
+//            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<String, Object>();
